@@ -1,34 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Echo Loadout
 
-## Getting Started
+The goal of this project is to create a minimalist website where *The Division 2* players can build, view and share their builds. The site will have no backend, ensuring fast and independent operation.
 
-First, run the development server:
+## Requirements
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+The system will follow the MoSCoW methodology to prioritize features:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Must Have
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- [ ] Build creator with selection of equipment, weapons, talents and attributes.
+- [ ] Minimalist interface with design inspired by *The Division 2*.
+- [ ] Light and dark theme.
+- [ ] Build saving in browser using *localStorage*.
+- [ ] Build image generation for download.
+- [ ] Sharing via QR Code with build data.
 
-## Learn More
+### Should Have
 
-To learn more about Next.js, take a look at the following resources:
+- [ ] Edit and delete builds saved in browser.
+- [ ] Export and import builds via JSON.
+- [ ] Compact view mode for easier reading.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Could Have
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [ ] Advanced UI customization (color and font changes).
+- [ ] Support for different image resolutions when generating download.
+- [ ] Generation of temporary links via an external service (like pastebin or hastebin).
 
-## Deploy on Vercel
+### Won't Have
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [ ] Backend for storing builds.
+- [ ] Login and authentication system.
+- [ ] Ranking or popular builds.
