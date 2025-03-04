@@ -6,6 +6,439 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgres"
   url      = env("DATABASE_URL")
+}
+
+model Weapon {
+  id                String                       @id @default(uuid())
+  name              String                       @unique
+  dps               BigInt
+  dpm               BigInt
+  talentId          String
+  acquisition       String?
+  useOverrideStats  Boolean                      @default(false)
+  weaponImage       String?
+  type              WeaponType
+  slot              WeaponSlot
+  rarity            ItemRarity
+  coreAttribute     WeaponCoreAttribute
+  minorAttribute    WeaponMinorAttribute?
+  variableAttribute WeaponVariableAttributeType?
+
+  weaponBaseStatsId String
+  weaponBaseStats   WeaponBaseStats      @relation(fields: [weaponBaseStatsId], references: [id])
+  overrideStats     WeaponOverrideStats?
+  talent            Talent               @relation(fields: [talentId], references: [id])
+  mods              WeaponMod[]
+  exoticEffectId    String?
+  exoticEffect      ExoticEffect?        @relation(fields: [exoticEffectId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("weapons")
+}
+
+model WeaponVariant {
+  id   String @id @default(uuid())
+  name String
+
+  weaponBaseStatsId String           @unique
+  WeaponBaseStats   WeaponBaseStats? @relation(fields: [weaponBaseStatsId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("weapon_variants")
+}
+
+model WeaponBaseStats {
+  id           String @id @default(uuid())
+  baseDamage   Float
+  rpm          Int
+  magazineSize Int
+  reloadSpeed  Float
+  accuracy     Float
+  stability    Float
+  optimalRange Float
+  hsd          Float
+
+  weaponVariant WeaponVariant?
+  Weapon        Weapon[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("weapon_base_stats")
+}
+
+model WeaponOverrideStats {
+  id           String @id @default(uuid())
+  baseDamage   Float
+  rpm          Int
+  magazineSize Int
+  reloadSpeed  Float
+  accuracy     Float
+  stability    Float
+  optimalRange Float
+  hsd          Float
+
+  weaponId String @unique
+  weapon   Weapon @relation(fields: [weaponId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("weapon_override_stats")
+}
+
+model WeaponMod {
+  id                     String        @id @default(uuid())
+  name                   String
+  type                   WeaponModType
+  positiveBonusAttribute String
+  positiveBonusValue     Float
+  positiveUnit           String
+  negativeBonusAttribute String
+  negativeBonusValue     Float
+  negativeUnit           String
+  compatibleTypes        WeaponType[]
+
+  weapons Weapon[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("weapon_mods")
+}
+
+model Talent {
+  id          String            @id @default(uuid())
+  name        String
+  description String
+  cooldown    Int?
+  triggerType TalentTriggerType
+
+  weapons Weapon[]
+  gears   Gear[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("talents")
+}
+
+model Specialization {
+  id           String             @id @default(uuid())
+  name         SpecializationType
+  description  String
+  passiveBuffs String[]
+  weaponBonus  WeaponType?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("specializations")
+}
+
+model Gear {
+  id             String            @id @default(uuid())
+  name           String            @unique
+  type           GearType
+  slot           GearSlot
+  rarity         ItemRarity
+  coreAttribute  GearCoreAttribute
+  armorValue     Int
+  imageUrl       String?
+  isExotic       Boolean           @default(false)
+  exoticEffectId String?
+
+  brandSetId      String?
+  brandSet        BrandSet?       @relation(fields: [brandSetId], references: [id])
+  gearSetId       String?
+  gearSet         GearSet?        @relation(fields: [gearSetId], references: [id])
+  minorAttributes GearAttribute[]
+  talents         Talent[]
+  exoticEffect    ExoticEffect?   @relation(fields: [exoticEffectId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("gears")
+}
+
+model BrandSet {
+  id   String @id @default(uuid())
+  name String
+
+  bonuses BrandBonus[]
+  gears   Gear[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("brand_sets")
+}
+
+model BrandBonus {
+  id          String @id @default(uuid())
+  pieces      Int // 1 a 3
+  description String
+
+  brandSetId String
+  brandSet   BrandSet @relation(fields: [brandSetId], references: [id])
+
+  @@map("brand_bonuses")
+}
+
+model GearSet {
+  id   String @id @default(uuid())
+  name String
+
+  bonuses GearSetBonus[]
+  gears   Gear[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("gear_sets")
+}
+
+model GearSetBonus {
+  id          String @id @default(uuid())
+  pieces      Int // 2 a 4
+  description String
+
+  gearSetId String
+  gearSet   GearSet @relation(fields: [gearSetId], references: [id])
+
+  @@map("gear_set_bonuses")
+}
+
+model GearAttribute {
+  id       String                @id @default(uuid())
+  name     String
+  value    Float
+  unit     String
+  category GearAttributeCategory
+
+  gearId String
+  gear   Gear   @relation(fields: [gearId], references: [id])
+
+  @@map("gear_attributes")
+}
+
+model GearMod {
+  id           String      @id @default(uuid())
+  name         String
+  stat         GearModStat
+  value        Float
+  unit         String
+  allowedSlots GearSlot[]
+
+  @@map("gear_mods")
+}
+
+model ExoticEffect {
+  id          String @id @default(uuid())
+  name        String
+  description String
+
+  Weapon Weapon[]
+  Gear   Gear[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("exotic_effects")
+}
+
+model Skill {
+  id          String        @id @default(uuid())
+  name        String
+  category    SkillCategory
+  description String
+  cooldown    Int
+
+  mods SkillMod[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("skills")
+}
+
+model SkillMod {
+  id           String     @id @default(uuid())
+  name         String
+  effect       String
+  value        Float
+  unit         String
+  requiredTier SkillTier?
+
+  skillId String
+  skill   Skill  @relation(fields: [skillId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@map("skill_mods")
+}
+
+enum WeaponType {
+  ASSAULT_RIFLE
+  SMG
+  LMG
+  SHOTGUN
+  MARKSMAN_RIFLE
+  RIFLE
+  PISTOL
+  EXOTIC
+}
+
+enum ItemRarity {
+  HIGH_END
+  NAMED
+  EXOTIC
+}
+
+enum WeaponModType {
+  OPTICS
+  BARREL
+  MAGAZINE
+  UNDERBARREL
+  MUZZLE
+}
+
+enum WeaponSlot {
+  PRIMARY
+  SIDEARM
+}
+
+enum WeaponCoreAttribute {
+  ASSAULT_RIFLE_DAMAGE
+  SMG_DAMAGE
+  LMG_DAMAGE
+  SHOTGUN_DAMAGE
+  MARKSMAN_RIFLE_DAMAGE
+  PISTOL_DAMAGE
+  RIFLE_DAMAGE
+}
+
+enum WeaponMinorAttribute {
+  HEALTH_DAMAGE
+  CRITICAL_HIT_CHANCE
+  CRITICAL_HIT_DAMAGE
+  HEADSHOT_DAMAGE
+}
+
+enum WeaponVariableAttributeType {
+  DMG_OUT_OF_COVER
+  DAMAGE_TO_ARMOR
+  HEALTH_DAMAGE
+  CRITICAL_HIT_CHANCE
+  CRITICAL_HIT_DAMAGE
+  HEADSHOT_DAMAGE
+  RELOAD_SPEED
+  STABILITY
+  ACCURACY
+  OPTIMAL_RANGE
+  MAGAZINE_SIZE
+  RATE_OF_FIRE
+  SWAP_SPEED
+}
+
+enum TalentTriggerType {
+  ON_KILL
+  ON_HIT
+  ON_SHOT
+  ON_CRIT
+}
+
+enum SpecializationType {
+  DEMOLITIONIST
+  SHARPSHOOTER
+  SURVIVALIST
+  GUNNER
+  TECHNICIAN
+  FIREWALL
+}
+
+enum GearType {
+  IMPROVISED
+  BRAND_SET
+  GEAR_SET
+  NAMED
+  EXOTIC
+}
+
+enum GearSlot {
+  MASK
+  CHEST
+  BACKPACK
+  GLOVES
+  KNEEPADS
+  HOLSTER
+}
+
+enum GearCoreAttribute {
+  WEAPON_DAMAGE
+  ARMOR
+  SKILL_TIER
+}
+
+enum GearAttributeCategory {
+  OFFENSIVE
+  DEFENSIVE
+  UTILITY
+}
+
+enum GearModStat {
+  CRIT_HIT_CHANCE
+  CRIT_HIT_DAMAGE
+  HEADSHOT_DAMAGE
+  ARMOR_ON_KILL
+  BLEED_RESISTANCE
+  BLIND_DEAF_RESISTANCE
+  BURN_RESISTANCE
+  DISORIENT_RESISTANCE
+  DISRUPT_RESISTANCE
+  ENSNARE_RESISTANCE
+  INCOMING_REPAIRS
+  PROTECTION_FROM_ELITES
+  PULSE_RESISTANCE
+  SHOCK_RESISTANCE
+  REPAIR_SKILLS
+  SKILL_DURATION
+  SKILL_HASTE
+}
+
+enum SkillCategory {
+  DRONE
+  TURRET
+  SEEKER_MINE
+  HIVE
+  FIREFLY
+  SHIELD
+  PULSE
+  CHEM_LAUNCHER
+}
+
+enum SkillTier {
+  TIER_0
+  TIER_1
+  TIER_2
+  TIER_3
+  TIER_4
+  TIER_5
+  TIER_6
 }
