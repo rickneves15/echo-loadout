@@ -16,7 +16,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL('/', req.nextUrl))
   }
 
-  if (session?.userId && req.nextUrl.pathname.startsWith('/sign-in')) {
+  if (session?.username && req.nextUrl.pathname.startsWith('/sign-in')) {
     return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
   }
 
