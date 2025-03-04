@@ -9,7 +9,7 @@ export default function SignInPage() {
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
             <GalleryVerticalEnd className="size-4" />
           </div>
-          Acme Inc.
+          Echo Loadout.
         </a>
         <LoginForm />
       </div>
