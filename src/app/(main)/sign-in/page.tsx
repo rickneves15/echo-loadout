@@ -1,5 +1,10 @@
 import { GalleryVerticalEnd } from 'lucide-react'
+import type { Metadata } from 'next'
 import { LoginForm } from '~/components/login-form'
+
+export const metadata: Metadata = {
+  title: 'Echo Loadout | Sign In',
+}
 
 export default function SignInPage() {
   return (

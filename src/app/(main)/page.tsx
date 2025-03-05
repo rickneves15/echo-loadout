@@ -1,4 +1,9 @@
+import type { Metadata } from 'next'
 import { createSession } from '~/lib/session'
+
+export const metadata: Metadata = {
+  title: 'Echo Loadout | Home',
+}
 
 export default function Home() {
   const onSignIn = async () => {
