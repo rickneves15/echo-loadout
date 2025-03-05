@@ -63,7 +63,7 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
     orientation: 'portrait',
-    categories: ['games', 'utilities'],
+    categories: ['games', 'utilities', 'tools'],
     // take a look at the screenshot section below
     // screenshots: [
     //   {
@@ -72,14 +72,14 @@ export default function manifest(): MetadataRoute.Manifest {
     //     type: 'image/png',
     //   },
     // ],
-    share_target: {
-      action: '/share',
-      method: 'GET',
-      params: {
-        title: 'title',
-        text: 'text',
-        url: 'url',
-      },
-    },
+    // share_target: {
+    //   action: '/share',
+    //   method: 'GET',
+    //   params: {
+    //     title: 'title',
+    //     text: 'text',
+    //     url: 'url',
+    //   },
+    // },
   }
 }
