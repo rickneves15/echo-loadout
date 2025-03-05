@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,6 +6,44 @@ datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")
 }
+
+// =======================
+// 📄 Full Documentation
+// =======================
+// This schema models all weapons, gear, talents, and skills
+// from The Division 2 game to enable the creation of complete builds.
+
+// Enums
+// -----------
+// GearType: Defines the type of gear (Improvised, Brand Set, Gear Set, Named, Exotic)
+// GearSlot: Defines the body slot where the gear is equipped
+// GearModStat: Lists available bonuses for gear mods
+// WeaponType: Defines the weapon categories in the game
+// ItemRarity: Defines the rarity of items (High-End, Named, Exotic)
+// WeaponModType: Defines where the mod is applied on the weapon
+// TalentTriggerType: Describes when the talent is triggered (e.g., on kill)
+// SkillCategory: Categorizes the available skills
+
+// Models
+// -----------
+
+// Weapon: Represents a weapon with its base stats, talents, mods, rarity, and attributes
+// WeaponVariant: Specific variations of a weapon, linked to base stats
+// WeaponBaseStats: Stores the fundamental statistics of a weapon like damage, RPM, and accuracy
+// WeaponOverrideStats: Allows unique weapons (Named/Exotic) to override base stats
+// WeaponMod: Represents mods that enhance or reduce weapon attributes, compatible with specific weapon types
+// Talent: Describes talents that provide effects on weapons and gear triggered by specific actions
+// Skill: Represents player abilities (skills) such as drones or turrets with cooldowns and mods
+// SkillMod: Modifications that alter a skill’s effects, like increasing duration or potency
+// Specialization: Defines player specializations, granting passive buffs and unique weapon bonuses
+// Gear: Represents wearable armor pieces, categorized by type and slot, with talents and attributes
+// BrandSet: Defines brand sets that give bonuses when equipping multiple gear pieces
+// BrandBonus: Describes the bonuses unlocked based on the number of brand set pieces equipped
+// GearSet: Represents gear sets that provide unique bonuses for specific playstyles
+// GearSetBonus: Bonuses that activate based on the number of gear set pieces equipped
+// GearAttribute: Secondary attributes that enhance gear performance in offensive, defensive, or utility categories
+// GearMod: Mods applied to specific gear slots to boost stats or resistances
+// ExoticEffect: Unique effects exclusive to exotic weapons and gear that provide special abilities
 
 model Weapon {
   id                String                       @id @default(uuid())
